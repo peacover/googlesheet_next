@@ -17,26 +17,72 @@ function shuffle(random_data: IGroup[]) {
   return random_data;
 }
 
-const check_duplicated_university = (group : any[], university : string, start_index : number) => {
-  for (let i = start_index; i < group.length; i++) {
-    if (group[i] && group[i].university && group[i].university.includes(university, i)) {
-      return true;
+// const check_duplicated_university = (group : any[], university : string, start_index : number) => {
+//   for (let i = start_index; i < group.length; i++) {
+//     if (group[i] && group[i].university && group[i].university.includes(university, i)) {
+//       return true;
+//     }
+//   }
+//   return false;
+// };
+
+const calcul_nb_universities_repetitions = (universities: { name: string; count: number, nb_repeatitions: number }[]) => {
+  universities.map((university) => {
+    if (university.count > 1) {
+      university.nb_repeatitions = Math.ceil(university.count / NUM_LANES);
     }
-  }
-  return false;
-};
+  });
+}
+
+
+const get_universities = (data: IGroup[]) => {
+  const universities = new Array<{ name: string; count: number, nb_repeatitions: number }>();
+  data.forEach((swimmer) => {
+    if (swimmer.university) {
+      const index = universities.findIndex((university) => university.name === swimmer.university);
+      if (index === -1) {
+        universities.push({ name: swimmer.university, count: 1, nb_repeatitions: 0 });
+      } else {
+        universities[index].count++;
+      }
+    }
+  });
+  calcul_nb_universities_repetitions(universities);
+  return universities;
+}
 
 const fill_groups = (groups: IGroup[][], random_data: IGroup[]) => {
+  // const random_data = new Array<IGroup>(...data);
   const number_swimmers = random_data.length;
   const number_groups = Math.ceil(number_swimmers / NUM_LANES);
+  const universities = get_universities(random_data);
+
+  // for (let i = 0; i < universities.length; i++) {
+  //   console.log("university: ", universities[i].name, universities[i].count, universities[i].nb_repeatitions);
+  // }
+
+  // while (random_data.length > 0) {
+  //   for (let i = 0; i < number_groups; i++) {
+  //     for (let j = 0; j < groups[i].length; j++) {
+  //       if (!groups[i][j]) {
+  //         // if (random_data[0].university && check_duplicated_university(groups[i], random_data[0].university, 0)) {
+  //         //   break;
+  //         // }
+  //         groups[i][j] = random_data[0];          
+  //         random_data.splice(0, 1);
+  //       }
+  //     }
+  //   }
+  // }
 
   while (random_data.length > 0) {
     for (let i = 0; i < number_groups; i++) {
       for (let j = 0; j < groups[i].length; j++) {
         if (!groups[i][j]) {
-          if (groups[i][j] && groups[i][j].university && check_duplicated_university(groups[i], groups[i][j].university, j)) {
-            break;
-          }
+          // if (random_data[0].university) {
+          //   const index = universities.findIndex((university) => university.name === random_data[0].university);
+            
+          // }
           groups[i][j] = random_data[0];          
           random_data.splice(0, 1);
         }

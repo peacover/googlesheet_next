@@ -5,10 +5,11 @@ import { balanced_groups } from "./(data)/script";
 
 export default async function Home() {
   const data : IGroup[][]| null = await balanced_groups();
-  
+
   if (!data) {
     return <p>NO DATA IN THE SHEET!!</p>;
   }
+  
 
   return (
     <>
