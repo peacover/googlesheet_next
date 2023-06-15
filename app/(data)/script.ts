@@ -1,9 +1,8 @@
-import { log } from "console";
 import { NUM_LANES, MIN_NUMBER_PER_GROUP } from "./inputs";
 import { IGroup } from "./interfaces";
 import { parseData } from "./parseData";
 
-function shuffle(random_data: IGroup[]) {
+function shuffle(random_data : IGroup[] | IGroup[][] | any) {
   let currentIndex = random_data.length,
     randomIndex;
 
@@ -19,7 +18,9 @@ function shuffle(random_data: IGroup[]) {
 }
 
 const calcul_nb_universities_repetitions = (
-  universities: { name: string; count: number; nb_repeatitions: number }[], data: IGroup[], number_swimmers: number
+  universities: { name: string; count: number; nb_repeatitions: number }[],
+  data: IGroup[],
+  number_swimmers: number
 ) => {
   universities.map((university) => {
     if (university.count > 1) {
@@ -67,9 +68,8 @@ const fill_groups = (groups: IGroup[][], random_data: IGroup[]) => {
   const number_swimmers = random_data.length;
   const number_groups = Math.ceil(number_swimmers / NUM_LANES);
   const universities = get_universities(random_data);
-  
-  universities.sort((u1, u2) => u2.nb_repeatitions - u1.nb_repeatitions);
 
+  universities.sort((u1, u2) => u2.nb_repeatitions - u1.nb_repeatitions);
 
   // while (random_data.length > 0) {
   //   for (let i = 0; i < number_groups; i++) {
@@ -84,7 +84,7 @@ const fill_groups = (groups: IGroup[][], random_data: IGroup[]) => {
   //         if (universities[index]) {
   //           // get_repeted_university_and_delete(universities[index].name);
   //           for (let k = 0; k < universities[index].nb_repeatitions; k++) {
-              
+
   //           }
   //         } else {
   //           groups[i][j] = random_data[0];
@@ -95,11 +95,30 @@ const fill_groups = (groups: IGroup[][], random_data: IGroup[]) => {
   //   }
   // }
 
-
-  // while (random_data.length > 0) {
-  //   for (let i = 0; i < universities.length; i++) {
-
-  // }
+  let index = 0;
+  for (let i = 0; i < universities.length; i++) {
+    while (index <= universities[i].count) {
+      const swimmer_index = random_data.findIndex(
+        (swimmer) => swimmer.university === universities[i].name
+      );
+      if (swimmer_index === -1) {
+        break;
+      }
+      for (let j = 0; j < groups[index].length; j++) {
+        if (!groups[index][j]) {
+          groups[index][j] = random_data[swimmer_index];
+          random_data.splice(swimmer_index, 1);
+          index++;
+          index = index % number_groups;
+          break;
+        }
+      }
+      // groups[index].push(random_data[swimmer_index]);
+      // random_data.splice(swimmer_index, 1);
+      // index++;
+      // index = index % number_groups;
+    }
+  }
 };
 
 const balanced_groups_size = (groups: IGroup[][], random_data: IGroup[]) => {
@@ -140,6 +159,14 @@ export const balanced_groups = async () => {
   shuffle(random_data);
   balanced_groups_size(groups, random_data);
   fill_groups(groups, random_data);
-
+  
+  for (let i = 0; i < groups.length; i++) {
+    groups[i].sort(() => Math.random() - 0.5);
+  }
+  groups.sort(() => Math.random() - 0.5);
+  // console.log("------------------------------------");
+  // for (let i = 0; i < groups.length; i++) {
+  //   console.log(groups[i]);
+  // }
   return groups;
 };
