@@ -96,27 +96,30 @@ const fill_groups = (groups: IGroup[][], random_data: IGroup[]) => {
   // }
 
   let index = 0;
-  for (let i = 0; i < universities.length; i++) {
-    while (index <= universities[i].count) {
-      const swimmer_index = random_data.findIndex(
-        (swimmer) => swimmer.university === universities[i].name
-      );
-      if (swimmer_index === -1) {
-        break;
-      }
-      for (let j = 0; j < groups[index].length; j++) {
-        if (!groups[index][j]) {
-          groups[index][j] = random_data[swimmer_index];
-          random_data.splice(swimmer_index, 1);
-          index++;
-          index = index % number_groups;
+  while(random_data.length)
+  {
+    for (let i = 0; i < universities.length; i++) {
+      while (index <= universities[i].count) {
+        const swimmer_index = random_data.findIndex(
+          (swimmer) => swimmer.university === universities[i].name
+        );
+        if (swimmer_index === -1) {
           break;
         }
+        for (let j = 0; j < groups[index].length; j++) {
+          if (!groups[index][j]) {
+            groups[index][j] = random_data[swimmer_index];
+            random_data.splice(swimmer_index, 1);
+            index++;
+            index = index % number_groups;
+            break;
+          }
+        }
+        // groups[index].push(random_data[swimmer_index]);
+        // random_data.splice(swimmer_index, 1);
+        // index++;
+        // index = index % number_groups;
       }
-      // groups[index].push(random_data[swimmer_index]);
-      // random_data.splice(swimmer_index, 1);
-      // index++;
-      // index = index % number_groups;
     }
   }
 };
@@ -159,7 +162,7 @@ export const balanced_groups = async () => {
   shuffle(random_data);
   balanced_groups_size(groups, random_data);
   fill_groups(groups, random_data);
-  
+
   for (let i = 0; i < groups.length; i++) {
     groups[i].sort(() => Math.random() - 0.5);
   }
