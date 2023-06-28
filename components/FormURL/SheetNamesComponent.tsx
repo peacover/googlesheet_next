@@ -1,6 +1,7 @@
+import { IGroup } from "@/app/(data)/interfaces";
 import axios from "axios";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 interface SheetNamesComponentProps {
   sheetId: string;
@@ -29,20 +30,23 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
     setselectedValue(response.data[0]);
     return response.data;
   });
-  // const dataQuery: QueryResult<any> = useQuery("Data", async () => {
-  //   const response = await axios.post("/api/generate", {
-  //     sheetId,
-  //     sheetNames,
-  //     NUM_LANES,
-  //     MIN_NUMBER_PER_GROUP,
-  //     START,
-  //     END,
-  //   });
-  //   return response.data;
-  // });
+  const generateMutation = useMutation(
+    async () => {
+      const response = await axios.post("/api/generate", {
+        sheetId,
+        sheetNames,
+        NUM_LANES,
+        MIN_NUMBER_PER_GROUP,
+        START,
+        END,
+      });
+      return response.data;
+    }
+  );
 
   const runScript = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    generateMutation.mutate();
   };
   return (
     <>
@@ -92,24 +96,25 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
             required
           />
           <input type="submit" value="Generate" />
-          <input type="reset" value="Reset" />
+          {/* <input type="reset" value="Reset" /> */}
         </form>
       )}
-      {/* {dataQuery.isLoading && <p>Loading...</p>}
-      {dataQuery.isError && <p>Error: {dataQuery.error.message}</p>}
-      {dataQuery.data && !dataQuery.isLoading && (
-        <div>
-          <h1>Group 1</h1>
+      
+      {generateMutation.isLoading && <p>Loading...</p>}
+      {generateMutation.data && generateMutation.data.map((group : IGroup[] | null, index: number) => (
+        <div key={index}>
+          <h1>Group {index + 1}</h1>
           <ul>
-            {Array.isArray(dataQuery.data) &&
-              dataQuery.data.map((swimmer, index) => (
+            {Array.isArray(group) &&
+              group.map((swimmer, index) => (
                 <li key={index}>
                   {swimmer.name} | {swimmer.university}
                 </li>
               ))}
           </ul>
+          <br/>
         </div>
-      )} */}
+      ))}
     </>
   );
 };

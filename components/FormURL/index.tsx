@@ -1,12 +1,6 @@
 "use client";
 
-import { IGroup } from "@/app/(data)/interfaces";
-import { getSheetNames } from "@/app/(data)/parseData";
-import { balanced_groups } from "@/app/(data)/script";
-import { google, sheets_v4 } from "googleapis";
-import { use, useEffect, useState } from "react";
-import axios from "axios";
-import { useQuery } from "react-query";
+import { useState } from "react";
 import { SheetNamesComponent } from "./SheetNamesComponent";
 
 export const FormURL = () => {
@@ -27,30 +21,6 @@ export const FormURL = () => {
     const sheetId: string = getSheetIdFromURL(URL);
     setSheetId(sheetId);
   };
-  //   const runScript = async (event: React.FormEvent<HTMLFormElement>) => {
-  //     event.preventDefault();
-
-  //     if (sheets) {
-  //       const range = selectedSheetName + "!" + START + ":" + END;
-  //       const response = await sheets.spreadsheets.values.get({
-  //         spreadsheetId: SheetId,
-  //         range,
-  //       });
-  //       const sheet_data = response.data.values || [];
-  //       const parsed_data: IGroup[] = await sheet_data.map(
-  //         ([name, university]) => ({
-  //           name: name,
-  //           university: university,
-  //         })
-  //       );
-  //       const data: IGroup[][] | null = await balanced_groups(
-  //         parsed_data,
-  //         NUM_LANES,
-  //         MIN_NUMBER_PER_GROUP
-  //       );
-  //       setData(data);
-  //     }
-  //   };
 
   return (
     <>

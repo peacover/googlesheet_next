@@ -10,8 +10,8 @@ export default async function generate(
   try {
     // const SHEET_ID: string = req.body.SHEET_ID;
     // const SHEET_NAME: string = req.body.SHEET_NAME;
-    // const START: number = req.body.START;
-    // const END: number = req.body.END;
+    // const START: string = req.body.START;
+    // const END: string = req.body.END;
     // const NUM_LANES: number = req.body.NUM_LANES;
     // const MIN_NUMBER_PER_GROUP: number = req.body.MIN_NUMBER_PER_GROUP;
 
@@ -21,12 +21,13 @@ export default async function generate(
     const END = "F30";
     const NUM_LANES = 5;
     const MIN_NUMBER_PER_GROUP = 3;
+
     const data = await parseSheetData(SHEET_ID, SHEET_NAME, START, END);
 
     if (!data) {
       throw new Error("Invalid data");
     }
-    const groups: IGroup[][] | IGroup[] | null = await balanced_groups(
+    const groups: IGroup[][] | null = await balanced_groups(
       data,
       NUM_LANES,
       MIN_NUMBER_PER_GROUP
