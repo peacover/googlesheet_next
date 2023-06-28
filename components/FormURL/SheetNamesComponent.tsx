@@ -18,7 +18,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
   sheetId,
 }) => {
   const [sheetNames, setSheetNames] = useState<string[]>([]);
-  const [selectedValue, setselectedValue] = useState<string>("");
+  const [selectedSheetValue, setSelectedSheetValue] = useState<string>("");
   const [START, setSTART] = useState<string>("A2");
   const [END, setEND] = useState<string>("F30");
   const [NUM_LANES, setNUM_LANES] = useState<number>(5);
@@ -27,14 +27,14 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
   const sheetNamesQuery: QueryResult<any> = useQuery("sheetNames", async () => {
     const response = await axios.post("/api/sheetNames", { sheetId });
     setSheetNames(response.data);
-    setselectedValue(response.data[0]);
+    setSelectedSheetValue(response.data[0]);
     return response.data;
   });
   const generateMutation = useMutation(
     async () => {
       const response = await axios.post("/api/generate", {
         sheetId,
-        sheetNames,
+        selectedSheetValue,
         NUM_LANES,
         MIN_NUMBER_PER_GROUP,
         START,
@@ -57,8 +57,8 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
           <label htmlFor="sheet">Sheet: </label>
           <select
             id="sheet"
-            value={selectedValue}
-            onChange={(event) => setselectedValue(event.target.value)}
+            value={selectedSheetValue}
+            onChange={(event) => setSelectedSheetValue(event.target.value)}
             required
           >
             {sheetNames.map((name) => (
@@ -99,7 +99,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
           {/* <input type="reset" value="Reset" /> */}
         </form>
       )}
-      
+
       {generateMutation.isLoading && <p>Loading...</p>}
       {generateMutation.data && generateMutation.data.map((group : IGroup[] | null, index: number) => (
         <div key={index}>
