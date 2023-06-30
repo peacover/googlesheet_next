@@ -2,7 +2,7 @@
 import { IGroup } from "./interfaces";
 // import { parseData } from "./parseData";
 
-function shuffle(random_data : IGroup[] | IGroup[][] | any) {
+function shuffle(random_data: IGroup[] | IGroup[][] | any) {
   let currentIndex = random_data.length,
     randomIndex;
 
@@ -20,7 +20,8 @@ function shuffle(random_data : IGroup[] | IGroup[][] | any) {
 const calcul_nb_universities_repetitions = (
   universities: { name: string; count: number; nb_repeatitions: number }[],
   data: IGroup[],
-  number_swimmers: number, NUM_LANES : number
+  number_swimmers: number,
+  NUM_LANES: number
 ) => {
   universities.map((university) => {
     if (university.count > 1) {
@@ -30,8 +31,7 @@ const calcul_nb_universities_repetitions = (
   });
 };
 
-const get_universities = (data: IGroup[], NUM_LANES : number) => {
-
+const get_universities = (data: IGroup[], NUM_LANES: number) => {
   const universities = new Array<{
     name: string;
     count: number;
@@ -53,7 +53,12 @@ const get_universities = (data: IGroup[], NUM_LANES : number) => {
       }
     }
   });
-  calcul_nb_universities_repetitions(universities, data, data.length, NUM_LANES);
+  calcul_nb_universities_repetitions(
+    universities,
+    data,
+    data.length,
+    NUM_LANES
+  );
   // for (let i = 0; i < universities.length; i++) {
   //   console.log(
   //     "university: ",
@@ -63,10 +68,25 @@ const get_universities = (data: IGroup[], NUM_LANES : number) => {
   //   );
   // }
   return universities;
-  
 };
 
-const fill_groups = (groups: IGroup[][], random_data: IGroup[], NUM_LANES : number) => {
+const isEmptyPresent = (group: IGroup[]) =>  {
+  let empty = false;
+  // console.log('group in is_empty_present: ', group);
+  for (let j = 0; j < group.length; j++) {
+    if (!group[j]) {
+      empty = true;
+      break;
+    }
+  }
+  return empty;
+}
+
+const fill_groups = (
+  groups: IGroup[][],
+  random_data: IGroup[],
+  NUM_LANES: number
+) => {
   const number_swimmers = random_data.length;
   const number_groups = Math.ceil(number_swimmers / NUM_LANES);
   const universities = get_universities(random_data, NUM_LANES);
@@ -75,20 +95,25 @@ const fill_groups = (groups: IGroup[][], random_data: IGroup[], NUM_LANES : numb
 
   // console.log("sorted universities: ", universities);
   let index = 0;
-  while(random_data.length)
-  {
+  while (random_data.length > 0) {
     for (let i = 0; i < universities.length; i++) {
-      while (index <= universities[i].count) {
+      // index = 0;
+      while (universities[i].count > 0) {
         const swimmer_index = random_data.findIndex(
           (swimmer) => swimmer.university === universities[i].name
         );
         if (swimmer_index === -1) {
           break;
         }
+        while (!isEmptyPresent(groups[index])) {
+          index++;
+          index = index % number_groups;
+        }
         for (let j = 0; j < groups[index].length; j++) {
           if (!groups[index][j]) {
             groups[index][j] = random_data[swimmer_index];
             random_data.splice(swimmer_index, 1);
+            universities[i].count--;
             index++;
             index = index % number_groups;
             break;
@@ -97,11 +122,14 @@ const fill_groups = (groups: IGroup[][], random_data: IGroup[], NUM_LANES : numb
       }
     }
   }
-
-
 };
 
-const balanced_groups_size = (groups: IGroup[][], random_data: IGroup[], NUM_LANES : number, MIN_NUMBER_PER_GROUP: number) => {
+const balanced_groups_size = (
+  groups: IGroup[][],
+  random_data: IGroup[],
+  NUM_LANES: number,
+  MIN_NUMBER_PER_GROUP: number
+) => {
   const number_swimmers = random_data.length;
   const number_groups = Math.ceil(number_swimmers / NUM_LANES);
   for (let i = 0; i < number_groups; i++) {
@@ -125,8 +153,11 @@ const balanced_groups_size = (groups: IGroup[][], random_data: IGroup[], NUM_LAN
   }
 };
 
-export const balanced_groups = async (random_data : any[], NUM_LANES : number, MIN_NUMBER_PER_GROUP: number) => {
-
+export const balanced_groups = async (
+  random_data: any[],
+  NUM_LANES: number,
+  MIN_NUMBER_PER_GROUP: number
+) => {
   if (!random_data) {
     return null;
   }
@@ -137,14 +168,17 @@ export const balanced_groups = async (random_data : any[], NUM_LANES : number, M
   // Fisher-Yates shuffle algorithm.
   shuffle(random_data);
   balanced_groups_size(groups, random_data, NUM_LANES, MIN_NUMBER_PER_GROUP);
+  console.log("groups: ", groups);
   fill_groups(groups, random_data, NUM_LANES);
 
-  for (let i = 0; i < groups.length; i++) {
-    groups[i].sort(() => Math.random() - 0.5);
-  }
-  groups.sort(() => Math.random() - 0.5);
   // for (let i = 0; i < groups.length; i++) {
-  //   console.log(groups[i]);
+  //   groups[i].sort(() => Math.random() - 0.5);
   // }
+  // groups.sort(() => Math.random() - 0.5);
+
+  console.log("groups -----------------------");
+  for (let i = 0; i < groups.length; i++) {
+    console.log(groups[i]);
+  }
   return groups;
 };

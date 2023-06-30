@@ -6,6 +6,7 @@ export default async function getSheetNames(
   res: NextApiResponse
 ) {
   try {
+    console.log("im in getSheetNames");
     if (!req.body.sheetId) {
       throw new Error("Invalid Google Sheet URL");
     }
