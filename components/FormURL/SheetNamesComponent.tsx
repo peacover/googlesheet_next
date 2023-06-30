@@ -105,10 +105,10 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
         <div key={index}>
           <h1>Group {index + 1}</h1>
           <ul>
-            {Array.isArray(group) &&
+            {group &&
               group.map((swimmer, index) => (
                 <li key={index}>
-                  {swimmer.name} | {swimmer.university}
+                  {swimmer?.name} | {swimmer?.university}
                 </li>
               ))}
           </ul>

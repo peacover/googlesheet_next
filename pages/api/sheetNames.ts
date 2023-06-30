@@ -6,7 +6,6 @@ export default async function getSheetNames(
   res: NextApiResponse
 ) {
   try {
-    console.log("im in getSheetNames");
     if (!req.body.sheetId) {
       throw new Error("Invalid Google Sheet URL");
     }
@@ -17,7 +16,6 @@ export default async function getSheetNames(
     const sheets = google.sheets({ version: "v4", auth });
 
     const sheetId = req.body.sheetId;
-    // const sheetId = "1efR3Jnc3kEVCkW4dYfhH9g7yiTZPp9DzhrlWZ1XG2y4";
     const spreadsheetMetadata = await sheets.spreadsheets.get({
       spreadsheetId: sheetId,
     });

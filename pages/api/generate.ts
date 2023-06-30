@@ -8,7 +8,7 @@ export default async function generate(
   res: NextApiResponse
 ) {
   try {
-    console.log('-------------------------------------------');
+    // console.log('-------------------------------------------');
     // console.log("body : ", req.body)
     const SHEET_ID: string = req.body.sheetId;
     const SHEET_NAME: string = req.body.selectedSheetValue;
@@ -25,9 +25,6 @@ export default async function generate(
     // const MIN_NUMBER_PER_GROUP = 1;
 
     const data = await parseSheetData(SHEET_ID, SHEET_NAME, START, END);
-
-    console.log('data : ', data);
-    
     if (!data) {
       throw new Error("Invalid data");
     }
