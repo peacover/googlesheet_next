@@ -1,10 +1,9 @@
-import { IGroup } from "@/app/(data)/interfaces";
+import { IGroup } from "@/pages/utils/interfaces";
 import { Card, CardContent, CardTitle } from "../ui/card";
 
 interface CardGroupProps {
   group: IGroup[] | null;
   index: number;
-  ref?: React.RefObject<HTMLDivElement> | null;
 }
 
 function indexToAlphabet(index: number) {
@@ -13,25 +12,23 @@ function indexToAlphabet(index: number) {
   }
   return String.fromCharCode(65 + index); // A is 65 in ASCII
 }
-export const CardGroup: React.FC<CardGroupProps> = ({ group, index, ref }) => {
+export const CardGroup: React.FC<CardGroupProps> = ({ group, index }) => {
   return (
     <>
       <Card className="p-4">
         <CardTitle className="flex justify-center m-5">
-          <h1>Group {indexToAlphabet(index)}</h1>
+          Group {indexToAlphabet(index)}
         </CardTitle>
-        {/* <CardContent> */}
-          <ul>
-            {group &&
-              group.map((swimmer, i) => (
-                <li className="pl-2" key={i}>
-                  {i + 1}. {swimmer?.name}{" "}
-                  {swimmer?.name && swimmer?.university ? "| " : " "}
-                  {swimmer?.university}
-                </li>
-              ))}
-          </ul>
-        {/* </CardContent> */}
+        <ul>
+          {group &&
+            group.map((swimmer, i) => (
+              <li className="pl-2" key={i}>
+                {i + 1}. {swimmer?.name}{" "}
+                {swimmer?.name && swimmer?.university ? "| " : " "}
+                {swimmer?.university}
+              </li>
+            ))}
+        </ul>
       </Card>
     </>
   );

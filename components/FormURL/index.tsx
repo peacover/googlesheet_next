@@ -29,7 +29,7 @@ export const FormURL = () => {
   return (
     <>
       <div className="flex flex-col items-center justify-center mt-[100px]">
-        <form onSubmit={handleFormURL}>
+        <form id="url_form" onSubmit={handleFormURL}>
           <div className="flex flex-row items-center justify-center space-x-7 p-8 border border-black rounded-md">
             <label
               htmlFor="url"

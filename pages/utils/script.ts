@@ -38,7 +38,7 @@ const get_universities = (data: IGroup[], NUM_LANES: number) => {
   return universities;
 };
 
-const isEmptyPresent = (group: IGroup[]) =>  {
+const isEmptyPresent = (group: IGroup[]) => {
   let empty = false;
   for (let j = 0; j < group.length; j++) {
     if (!group[j]) {
@@ -47,7 +47,7 @@ const isEmptyPresent = (group: IGroup[]) =>  {
     }
   }
   return empty;
-}
+};
 
 const fill_groups = (
   groups: IGroup[][],

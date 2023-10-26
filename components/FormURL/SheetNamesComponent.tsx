@@ -1,11 +1,10 @@
-import { IGroup } from "@/app/(data)/interfaces";
+import { IGroup } from "@/pages/utils/interfaces";
 import axios from "axios";
-import { createRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { Button } from "../ui/button";
 import { CardGroup } from "./CardGroup";
 import { Loader2 } from "lucide-react";
-import html2canvas from "html2canvas";
 import * as htmlToImage from "html-to-image";
 
 interface SheetNamesComponentProps {
@@ -32,7 +31,6 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
   sheetId,
   sheetNames,
 }) => {
-  // const [sheetNames, setSheetNames] = useState<string[]>([]);
   const [selectedSheetValue, setSelectedSheetValue] = useState<string>("");
   const [START, setSTART] = useState<string>("A2");
   const [END, setEND] = useState<string>("F30");
@@ -55,6 +53,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
     a.download = createFileName(extension, name);
     a.click();
   };
+  
   // const sheetNamesQuery: QueryResult<any> = useQuery("sheetNames", async () => {
   //   if (!sheetId) return;
   //   const response = await axios.post("/api/sheetNames", { sheetId });
@@ -65,8 +64,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
 
   useEffect(() => {
     if (!sheetId) return;
-    console.log("test: ", sheetNames);
-    setSelectedSheetValue(sheetNames[0]);
+    setSelectedSheetValue(sheetNames[0]?.toString());
   }, [sheetId]);
   const generateMutation = useMutation(async () => {
     if (!sheetId) return;
@@ -91,6 +89,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
       {sheetNamesQuery.isError && <p>Error: {sheetNamesQuery.error.message}</p>} */}
       <div className="w-auto mt-10 ">
         <form
+          id="generate_form"
           onSubmit={runScript}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         >
@@ -124,6 +123,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
               Number per group:{" "}
             </label>
             <input
+            id="nb_lanes"
               type="number"
               value={NUM_LANES}
               onChange={(event) => setNUM_LANES(parseInt(event.target.value))}
@@ -140,6 +140,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
               Start cell:{" "}
             </label>
             <input
+              id="start"
               type="text"
               value={START}
               onChange={(event) => setSTART(event.target.value)}
@@ -156,6 +157,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
               End cell:{" "}
             </label>
             <input
+              id="end"
               type="text"
               value={END}
               onChange={(event) => setEND(event.target.value)}
@@ -172,6 +174,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
               Min number per group:{" "}
             </label>
             <input
+              id="min_number_per_group"
               type="number"
               value={MIN_NUMBER_PER_GROUP}
               onChange={(event) =>
@@ -189,6 +192,7 @@ export const SheetNamesComponent: React.FC<SheetNamesComponentProps> = ({
               Title:{" "}
             </label>
             <input
+              id="title"
               type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
